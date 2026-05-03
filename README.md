@@ -92,13 +92,88 @@ pip install fastapi uvicorn numpy scikit-learn
 - ALWAYS install them inside a virtual environment using venv and activate it
 
 ```
-**3. Run the API Locally:**
+**3. Run the API Locally: (run in your WSL terminal)**
 ```bash
-uvicorn src.api.main:app --reload
+    uvicorn src.api.main:app --reload
+    - Starts your API server locally
 ```
 **4. Test via Swagger UI:**
 * Open your browser and go to: `http://localhost:8000/docs`
-* Test the `/predict` endpoint using a sample payload: `[5.1, 3.5, 1.4, 0.2]`
+## * Steps:
+* Click POST /predict
+* Click “Try it out”
+* Enter:
+* edit the json file with this data e.g.:  "data": [5.1, 3.5, 1.4, 0.2]
+* Click Execute
+--- 
+
+## OR 
+
+- keep running your server at wsl terminal using this if alreday not run:
+```bash
+    uvicorn src.api.main:app --reload
+    - Starts your API server locally don't close it 
+```
+- open your VSCode terminal : activate your .venv if not already activated
+- then  run below command, we can see the prediction output:
+```bash
+curl -X POST "http://localhost:8000/predict" \
+-H "Content-Type: application/json" \
+-d '{"data":[5.1,3.5,1.4,0.2]}'
+```
+- To get prediction 1 use -d '{"data":[5.9, 3.0, 4.2, 1.5]}', --> output: {"prediction":[1]}
+
+- and for prediction 2 use -d '{"data":[6.9, 3.1, 5.4, 2.1]} --> output : {"prediction":[2]}
+
+### 🧪 API Testing Flow & Benefits
+
+```mermaid
+flowchart TD
+    %% Test Setup
+    subgraph Setup ["🛠️ 1. Test Setup"]
+        direction TB
+        A[📁 mkdir tests] --> B[📄 tests/test_api.py]
+        B --> C[📦 pip install pytest]
+    end
+
+    %% Internal Flow
+    subgraph Flow ["🔄 2. Test Execution Flow"]
+        direction TB
+        D[Test File Calls API] --> E[Check Response Status & JSON]
+        E --> F{Pass / Fail}
+    end
+
+    Setup --> |Run pytest| Flow
+    Flow --> Benefits
+    
+    style Setup fill:#e3f2fd,stroke:#1565c0
+    style Flow fill:#f3e5f5,stroke:#7b1fa2
+    style Benefits fill:#e8f5e9,stroke:#2e7d32
+```
+
+<details>
+<summary><b>📄 Click to expand: <code>tests/test_api.py</code></b></summary>
+
+```python
+from fastapi.testclient import TestClient
+from src.api.main import app
+
+client = TestClient(app)
+
+def test_home():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "message" in response.json()
+
+def test_predict():
+    response = client.post(
+        "/predict",
+        json={"data": [5.1, 3.5, 1.4, 0.2]}
+    )
+    assert response.status_code == 200
+    assert "prediction" in response.json()
+```
+</details>
 
 #### 🔄 The API Prediction Flow
 ```mermaid
@@ -109,6 +184,7 @@ graph TD
     PKL -->|Result| PredictLogic
     PredictLogic -->|Return Dict| Route
     Route -->|HTTP 200 OK| User
+
 ```
 
 ---

@@ -1,4 +1,5 @@
 from fastapi import APIRouter 
+from pydantic import BaseModel
 from src.model.predict import predict
 
 router = APIRouter()
@@ -9,7 +10,7 @@ class InputData(BaseModel):
 
 @router.get("/")
 def home():
-    return {"Message": "ML API is running succesfully"}
+    return {"message": "ML API is running succesfully"}
 
 @router.post("/predict")
 def predict_api(input:InputData):

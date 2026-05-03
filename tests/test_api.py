@@ -15,3 +15,4 @@ def test_predict():
     )
     assert response.status_code == 200
     assert "prediction" in response.json()
+    # return response.json()

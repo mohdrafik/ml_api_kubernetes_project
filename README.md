@@ -174,13 +174,16 @@ def test_predict():
     assert "prediction" in response.json()
 ```
 </details>
+```bash
+- run: python -m pytest 
+```
 
 #### 🔄 The API Prediction Flow
 ```mermaid
 graph TD
-    User((User)) -->|POST /predict<br/>[5.1, 3.5, 1.4, 0.2]| Route[FastAPI<br/>src/api/routes.py]
-    Route -->|Pass Data| PredictLogic[src/model/predict.py]
-    PredictLogic -->|Load & Run| PKL[(artifacts/model.pkl)]
+    User(("User")) -- "POST /predict<br/>[5.1, 3.5, 1.4, 0.2]" --> Route["FastAPI<br/>src/api/routes.py"]
+    Route -->|Pass Data| PredictLogic["src/model/predict.py"]
+    PredictLogic -->|Load & Run| PKL[("artifacts/model.pkl")]
     PKL -->|Result| PredictLogic
     PredictLogic -->|Return Dict| Route
     Route -->|HTTP 200 OK| User

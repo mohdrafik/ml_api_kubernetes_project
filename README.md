@@ -174,8 +174,9 @@ def test_predict():
     assert "prediction" in response.json()
 ```
 </details>
+
 ```bash
-- run: python -m pytest 
+    - run:-->  python -m pytest 
 ```
 
 #### 🔄 The API Prediction Flow

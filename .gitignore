@@ -42,3 +42,4 @@ dist/
 # Kubernetes secrets (if any)
 *.secret.yaml
 
+minikube-linux-amd64
